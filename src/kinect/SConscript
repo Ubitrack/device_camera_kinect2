@@ -1,0 +1,19 @@
+import sys
+import glob
+import os.path
+
+# import variables from other scons files
+Import( '*' )
+env = masterEnv.Clone()
+
+env.AppendUnique( **mergeOptions( utdataflow_all_options, utcomponents_options, mskinectsdk20_options, utvision_all_options ) )
+
+# create component libraries
+comp_sources = globSourceFiles( '*.cpp' )
+
+# compile components as shared libraries
+setupComponentBuild(env, comp_sources, 'kinect20')
+
+sources = globSourceFiles( '*.cpp' )
+headers = globSourceFiles( '*.h' )
+createVisualStudioProject(env, sources, headers, 'kinect20-Component')

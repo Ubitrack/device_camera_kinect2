@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<UTQLPatternTemplates xmlns='http://ar.in.tum.de/ubitrack/utql'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                      xmlns:xi='http://www.w3.org/2001/XInclude'
+                      xmlns:h="http://www.w3.org/1999/xhtml"
+                      xsi:schemaLocation='http://ar.in.tum.de/ubitrack/utql ../../../schema/utql_templates.xsd'>
+
+
+  <Pattern name="Kinect20ImageUncalibrated" displayName="Kinect20 Image Uncalibrated">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="ImagePlane" displayName="Image Plane">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="3" default="0" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">0 Color, 1 IR, 2 Depth</p></Description>
+				</Attribute>
+                <Attribute name="onlyPlayer" displayName="Show only Player" min="0" max="1" default="0" xsi:type="IntAttributeDeclarationType">
+                	<Description><p xmlns="http://www.w3.org/1999/xhtml">1 true, 0 false. If true only Player in Depth mode is visible.</p></Description>
+                </Attribute>
+            </Edge>
+			<Edge name="OutputGray" displayName="OutputGray" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Image"/>
+
+        </DataflowConfiguration>
+    </Pattern>
+
+	<Pattern name="Kinect20IRImageUncalibrated" displayName="Kinect20 IR Camera Uncalibrated">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+
+			<Node name="Kinect20IRCamera" displayName="Kinect20IRCamera">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="ImagePlane" displayName="Image Plane">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20IRCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="3" default="1" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">0 Color, 1 IR, 2 Depth</p></Description>
+				</Attribute>
+                <Attribute name="onlyPlayer" displayName="Show only Player" min="0" max="1" default="0" xsi:type="IntAttributeDeclarationType">
+                	<Description><p xmlns="http://www.w3.org/1999/xhtml">1 true, 0 false. If true only Player in Depth mode is visible.</p></Description>
+                </Attribute>
+            </Edge>
+			<Edge name="OutputGray" displayName="OutputGray" source="Kinect20IRCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Image"/>
+
+        </DataflowConfiguration>
+    </Pattern>
+
+	<Pattern name="Kinect20Image" displayName="Kinect20 Image">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="ImagePlane" displayName="Image Plane">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="3" default="0" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">0 Color, 1 IR, 2 Depth</p></Description>
+				</Attribute>
+                <Attribute name="onlyPlayer" displayName="Show only Player" min="0" max="1" default="0" xsi:type="IntAttributeDeclarationType">
+                	<Description><p xmlns="http://www.w3.org/1999/xhtml">1 true, 0 false. If true only Player in Depth mode is visible.</p></Description>
+                </Attribute>
+            </Edge>
+			<Edge name="OutputGray" displayName="OutputGray" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+			<Edge name="OutputRAW" displayName="OutputRAW" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Image"/>
+			  <Attribute name="cameraModelFile" default="CamModel.calib" displayName="Camera model file" xsi:type="PathAttributeDeclarationType">
+                <Description>
+                	<h:p>Cameramodelfile</h:p>
+               	</Description>
+            </Attribute>
+        </DataflowConfiguration>
+    </Pattern>
+
+	<Pattern name="Kinect20IRImage" displayName="Kinect20 IR Camera">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+
+			<Node name="Kinect20IRCamera" displayName="Kinect20IRCamera">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="ImagePlane" displayName="Image Plane">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20IRCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="3" default="1" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">0 Color, 1 IR, 2 Depth</p></Description>
+				</Attribute>
+                <Attribute name="onlyPlayer" displayName="Show only Player" min="0" max="1" default="0" xsi:type="IntAttributeDeclarationType">
+                	<Description><p xmlns="http://www.w3.org/1999/xhtml">1 true, 0 false. If true only Player in Depth mode is visible.</p></Description>
+                </Attribute>
+            </Edge>
+			<Edge name="OutputGray" displayName="OutputGray" source="Kinect20IRCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+			<Edge name="OutputRAW" displayName="OutputRAW" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Image"/>
+			  <Attribute name="intrinsicMatrixFile" default="CamMatrix.calib" displayName="Intrinsic matrix file" xsi:type="PathAttributeDeclarationType">
+                <Description>
+                	<h:p>Optional file where the camera intrinsic matrix will be read from. This is necessary to
+                	undistort the image. The matrix is also provided to other components via the
+                	<h:code>Intrinsics</h:code> port</h:p>
+               	</Description>
+            </Attribute>
+            <Attribute name="distortionFile" default="CamCoeffs.calib" displayName="Distortion file" xsi:type="PathAttributeDeclarationType">
+                <Description><h:p>Optional file where radial distortion coefficients will be read from. This is necessary to
+                undistort the image. </h:p></Description>
+            </Attribute>
+        </DataflowConfiguration>
+    </Pattern>
+
+    <Pattern name="Kinect20AbsoluteSkeleton" displayName="Kinect20 Absolute Skeleton">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="Kinect20AbsoluteSkeleton" displayName="Kinect20 Absolute Skeleton">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20" destination="Kinect20AbsoluteSkeleton">
+                <Attribute name="type" value="PoseList" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="5" default="0" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">ID of bone</p></Description>
+                </Attribute>
+            </Edge>
+
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20AbsoluteSkeleton"/>
+            <Attribute name="scale" displayName="scale" default="1" min="0" xsi:type="DoubleAttributeDeclarationType">
+                <Description><h:p>Scale.</h:p></Description>
+            </Attribute>
+        </DataflowConfiguration>
+    </Pattern>
+
+    <Pattern name="Kinect20Skeleton" displayName="Kinect20 Skeleton">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+
+            <Node name="HipCenter" displayName="Hip Center">
+            </Node>
+
+            <Node name="Spine" displayName="Spine">
+            </Node>
+
+            <Node name="ShoulderCenter" displayName="Shoulder Center">
+            </Node>
+
+            <Node name="Head" displayName="Head">
+            </Node>
+
+            <Node name="ShoulderLeft" displayName="Shoulder Left">
+            </Node>
+
+            <Node name="ElbowLeft" displayName="Elbow Left">
+            </Node>
+
+            <Node name="WristLeft" displayName="Wrist Left">
+            </Node>
+
+            <Node name="HandLeft" displayName="Hand Left">
+            </Node>
+
+            <Node name="ShoulderRight" displayName="Shoulder Right">
+            </Node>
+
+            <Node name="ElbowRight" displayName="Elbow Right">
+            </Node>
+
+            <Node name="WristRight" displayName="Wrist Right">
+            </Node>
+
+            <Node name="HandRight" displayName="Hand Right">
+            </Node>
+
+            <Node name="HipLeft" displayName="Hip Left">
+            </Node>
+
+            <Node name="KneeLeft" displayName="Knee Left">
+            </Node>
+
+            <Node name="AnkleLeft" displayName="Ankle Left">
+            </Node>
+
+            <Node name="FootLeft" displayName="Foot Left">
+            </Node>
+
+            <Node name="HipRight" displayName="Hip Right">
+            </Node>
+
+            <Node name="KneeRight" displayName="Knee Right">
+            </Node>
+
+            <Node name="AnkleRight" displayName="Ankle Right">
+            </Node>
+
+            <Node name="FootRight" displayName="Foot Right">
+            </Node>
+
+            <Edge name="Output" displayName="Tracked Position" source="Kinect20" destination="HipCenter">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="5" default="0" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">ID of tool</p></Description>
+                </Attribute>
+            </Edge>
+
+            <Edge name="SpinePos" displayName="Tracked Position" source="HipCenter" destination="Spine">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="ShoulderCenterPos" displayName="Tracked Position" source="Spine" destination="ShoulderCenter">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="HeadPos" displayName="Tracked Position" source="ShoulderCenter" destination="Head">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="ShoulderLeftPos" displayName="Tracked Position" source="ShoulderCenter" destination="ShoulderLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="ElbowLeftPos" displayName="Tracked Position" source="ShoulderLeft" destination="ElbowLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="WristLeftPos" displayName="Tracked Position" source="ElbowLeft" destination="WristLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="HandLeftPos" displayName="Tracked Position" source="WristLeft" destination="HandLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="ShoulderRightPos" displayName="Tracked Position" source="ShoulderCenter" destination="ShoulderRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+             <Edge name="ElbowRightPos" displayName="Tracked Position" source="ShoulderRight" destination="ElbowRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="WristRightPos" displayName="Tracked Position" source="ElbowRight" destination="WristRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="HandRightPos" displayName="Tracked Position" source="WristRight" destination="HandRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="HipLeftPos" displayName="Tracked Position" source="HipCenter" destination="HipLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="KneeLeftPos" displayName="Tracked Position" source="HipLeft" destination="KneeLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+            <Edge name="AnkleLeftPos" displayName="Tracked Position" source="KneeLeft" destination="AnkleLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="FootLeftPos" displayName="Tracked Position" source="AnkleLeft" destination="FootLeft">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+            <Edge name="HipRightPos" displayName="Tracked Position" source="HipCenter" destination="HipRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="KneeRightPos" displayName="Tracked Position" source="HipRight" destination="KneeRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+            <Edge name="AnkleRightPos" displayName="Tracked Position" source="KneeRight" destination="AnkleRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+             <Edge name="FootRightPos" displayName="Tracked Position" source="AnkleRight" destination="FootRight">
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Skeleton"/>
+            <Attribute name="scale" displayName="scale" default="1" min="0" xsi:type="DoubleAttributeDeclarationType">
+                <Description><h:p>Scale.</h:p></Description>
+            </Attribute>
+        </DataflowConfiguration>
+    </Pattern>
+
+
+
+
+    <!-- Attribute declarations -->
+
+    <GlobalNodeAttributeDeclarations>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/1/4)"/>
+    </GlobalNodeAttributeDeclarations>
+
+    <GlobalEdgeAttributeDeclarations>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/1)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/2)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/3)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/4)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/5)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/6)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/7)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/8)"/>
+    </GlobalEdgeAttributeDeclarations>
+
+    <GlobalDataflowAttributeDeclarations>
+        <!-- Unfortunately, the xpointer used in Xinclude is currently restricted to the element scheme and absolute element indices in Xerces (and thus XMLBeans) -->
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/3/1)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/3/2)"/>
+    </GlobalDataflowAttributeDeclarations>
+
+</UTQLPatternTemplates>

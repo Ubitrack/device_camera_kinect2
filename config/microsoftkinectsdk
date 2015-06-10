@@ -1,0 +1,26 @@
+import os
+import sys
+
+# add configuration options
+Import( '*' )
+
+SConscript ( '#/config/libraryConfig.py' )
+Import('standardLibFinder', 'standardLibConfig')
+
+
+libName = "MSKINECTSDK20"
+
+compileSettings = []
+
+#[{additional compile settings}, {include files}, {language (C++)},{library to link against (optional)}, {source code (optional)}]
+compileSettings =[ {}, "Kinect.h", "C++"]		
+
+libFinder = standardLibFinder(libName,compileSettings)
+
+configHelper = standardLibConfig(libName, libFinder)
+
+mskinectsdk20_options = configHelper.getLibraryOptions()
+have_mskinectsdk20 = configHelper.haveLib()
+
+# export results
+Export( [ 'mskinectsdk20_options', 'have_mskinectsdk20'] )

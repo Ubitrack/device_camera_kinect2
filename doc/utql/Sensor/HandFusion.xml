@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<UTQLPatternTemplates xmlns='http://ar.in.tum.de/ubitrack/utql'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                      xmlns:xi='http://www.w3.org/2001/XInclude'
+                      xmlns:h="http://www.w3.org/1999/xhtml"
+                      xsi:schemaLocation='http://ar.in.tum.de/ubitrack/utql ../../../schema/utql_templates.xsd'>
+
+    <Pattern name="HandFusion" displayName="HandFusion">
+    	<Description><h:p>The component fuses hands.</h:p></Description>
+
+        <Input>
+            <Node name="Kinect" displayName="Kinect"/>
+            <Node name="Skeleton" displayName="Skeleton"/>
+            <Node name="RH" displayName="Right Hand"/>
+            <Node name="LH" displayName="Left Hand"/>
+            <Edge name="Skeleton" source="Kinect" destination="Skeleton" displayName="Skeleton">
+            	<Description><h:p>The list of poses of the skeleton</h:p></Description>
+                <Predicate>type=='PoseList'</Predicate>
+            </Edge>
+            <Edge name="RightHandPose" source="Kinect" destination="RH" displayName="RightHandPose">
+            	<Description><h:p>Input pose</h:p></Description>
+                <Predicate>type=='6D'</Predicate>
+            </Edge>
+            <Edge name="LeftHandPose" source="Kinect" destination="LH" displayName="RightHandPose">
+                <Description><h:p>Input pose</h:p></Description>
+                <Predicate>type=='6D'</Predicate>
+            </Edge>
+        </Input>
+
+        <Output>
+            <Edge name="FusedSkeleton" source="Kinect" destination="Skeleton" displayName="Fused Skeleton">
+            	<Description><h:p>Fused skeleton poses.</h:p></Description>
+                <Attribute name="type" value="PoseList" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+        </Output>
+
+        <Constraints>
+        	<TriggerGroup>
+                <Edge edge-ref="Skeleton"/>
+                <Edge edge-ref="RightHandPose"/>
+                <Edge edge-ref="LeftHandPose"/>
+                <Edge edge-ref="FusedSkeleton"/>
+            </TriggerGroup>
+        </Constraints>
+
+        <DataflowConfiguration>
+            <UbitrackLib class="HandFusion"/>
+        </DataflowConfiguration>
+    </Pattern>
+
+    <Pattern name="LHSelector" displayName="LHSelector">
+        <Description><h:p>The component selects one pose from a pose list.</h:p></Description>
+
+        <Input>
+            <Node name="A" displayName="A"/>
+            <Node name="B" displayName="B"/>
+            <Edge name="PoseList" source="A" destination="B" displayName="PoseList">
+                <Description><h:p>The list of poses of the B</h:p></Description>
+                <Predicate>type=='PoseList'</Predicate>
+            </Edge>
+        </Input>
+
+        <Output>
+            <Edge name="Pose" source="A" destination="B" displayName="Pose">
+                <Description><h:p>Fused B poses.</h:p></Description>
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+        </Output>
+
+        <Constraints>
+            <TriggerGroup>
+                <Edge edge-ref="PoseList"/>
+                <Edge edge-ref="Pose"/>
+            </TriggerGroup>
+        </Constraints>
+
+        <DataflowConfiguration>
+            <UbitrackLib class="LHSelector"/>
+        </DataflowConfiguration>
+    </Pattern>
+
+    <Pattern name="RHSelector" displayName="RHSelector">
+        <Description><h:p>The component selects one pose from a pose list.</h:p></Description>
+
+        <Input>
+            <Node name="A" displayName="A"/>
+            <Node name="B" displayName="B"/>
+            <Edge name="PoseList" source="A" destination="B" displayName="PoseList">
+                <Description><h:p>The list of poses of the B</h:p></Description>
+                <Predicate>type=='PoseList'</Predicate>
+            </Edge>
+        </Input>
+
+        <Output>
+            <Edge name="Pose" source="A" destination="B" displayName="Pose">
+                <Description><h:p>Fused B poses.</h:p></Description>
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+        </Output>
+
+        <Constraints>
+            <TriggerGroup>
+                <Edge edge-ref="PoseList"/>
+                <Edge edge-ref="Pose"/>
+            </TriggerGroup>
+        </Constraints>
+
+        <DataflowConfiguration>
+            <UbitrackLib class="RHSelector"/>
+        </DataflowConfiguration>
+    </Pattern>
+
+    <Pattern name="LWSelector" displayName="LWSelector">
+        <Description><h:p>The component selects one pose from a pose list.</h:p></Description>
+
+        <Input>
+            <Node name="A" displayName="A"/>
+            <Node name="B" displayName="B"/>
+            <Edge name="PoseList" source="A" destination="B" displayName="PoseList">
+                <Description><h:p>The list of poses of the B</h:p></Description>
+                <Predicate>type=='PoseList'</Predicate>
+            </Edge>
+        </Input>
+
+        <Output>
+            <Edge name="Pose" source="A" destination="B" displayName="Pose">
+                <Description><h:p>Fused B poses.</h:p></Description>
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+        </Output>
+
+        <Constraints>
+            <TriggerGroup>
+                <Edge edge-ref="PoseList"/>
+                <Edge edge-ref="Pose"/>
+            </TriggerGroup>
+        </Constraints>
+
+        <DataflowConfiguration>
+            <UbitrackLib class="LWSelector"/>
+        </DataflowConfiguration>
+    </Pattern>
+
+    <Pattern name="RWSelector" displayName="RWSelector">
+        <Description><h:p>The component selects one pose from a pose list.</h:p></Description>
+
+        <Input>
+            <Node name="A" displayName="A"/>
+            <Node name="B" displayName="B"/>
+            <Edge name="PoseList" source="A" destination="B" displayName="PoseList">
+                <Description><h:p>The list of poses of the B</h:p></Description>
+                <Predicate>type=='PoseList'</Predicate>
+            </Edge>
+        </Input>
+
+        <Output>
+            <Edge name="Pose" source="A" destination="B" displayName="Pose">
+                <Description><h:p>Fused B poses.</h:p></Description>
+                <Attribute name="type" value="6D" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+        </Output>
+
+        <Constraints>
+            <TriggerGroup>
+                <Edge edge-ref="PoseList"/>
+                <Edge edge-ref="Pose"/>
+            </TriggerGroup>
+        </Constraints>
+
+        <DataflowConfiguration>
+            <UbitrackLib class="RWSelector"/>
+        </DataflowConfiguration>
+    </Pattern>
+
+
+
+
+
+    <!-- Attribute declarations -->
+
+    <GlobalNodeAttributeDeclarations>
+        <xi:include href="../../GlobalAttrSpec.xml" xpointer="element(/1/1/1)"/>
+    </GlobalNodeAttributeDeclarations>
+
+    <GlobalEdgeAttributeDeclarations>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/1)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/2)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/3)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/4)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/5)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/6)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/7)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/2/8)"/>
+    </GlobalEdgeAttributeDeclarations>
+
+    <GlobalDataflowAttributeDeclarations>
+        <!-- Unfortunately, the xpointer used in Xinclude is currently restricted to the element scheme and absolute element indices in Xerces (and thus XMLBeans) -->
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/3/1)"/>
+        <xi:include href="file:GlobalAttrSpec.xml" xpointer="element(/1/3/2)"/>
+    </GlobalDataflowAttributeDeclarations>
+
+
+
+</UTQLPatternTemplates>
