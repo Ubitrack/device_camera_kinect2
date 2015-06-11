@@ -201,11 +201,11 @@ public:
 	{};
 
 	HANDLE getEvent(){
-		return m_hNextEvent;
+		return reinterpret_cast<HANDLE>(m_hNextEvent);
 	};
 
 protected:
-	HANDLE m_hNextEvent;
+	WAITABLE_HANDLE m_hNextEvent;
 	IKinectSensor* m_sensor;
 };
 
@@ -366,6 +366,12 @@ public:
 			bodyFrameSource->Release();
 		}
 
+		m_hNextEvent = NULL;
+		hr = m_bodyFrameReader->SubscribeFrameArrived(&m_hNextEvent);
+		if (FAILED(hr)) {
+			LOG4CPP_ERROR(logger2, "failed to subscribe to body events");
+			return;
+		}
 	};
 
 	virtual void sendData( Measurement::Timestamp ts);
@@ -432,91 +438,91 @@ public:
 
 		HRESULT hr;
 
-		if (getKey().m_targetID == 0) { // color frames
-			IColorFrameSource* colorFrameSource;
-			hr = sensor->get_ColorFrameSource(&colorFrameSource);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "failed to get colorFrameSource");
-				return;
-			}
+		int targetID = getKey().m_targetID;
 
-			hr = colorFrameSource->OpenReader(&m_colorFrameReader);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "failed to open reader");
-				return;
-			}
+		m_hNextEvent = NULL;
+		switch (targetID) {
+			case 0:
+				IColorFrameSource* colorFrameSource;
+				hr = sensor->get_ColorFrameSource(&colorFrameSource);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2, "failed to get colorFrameSource");
+					return;
+				}
 
-			if (colorFrameSource != NULL) {
-				colorFrameSource->Release();
-			}
-		} else if (getKey().m_targetID == 1) { // infrared frames
-			IInfraredFrameSource* infraredFrameSource;
-			hr = sensor->get_InfraredFrameSource(&infraredFrameSource);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "failed to get infraredFrameSource");
-				return;
-			}
+				hr = colorFrameSource->OpenReader(&m_colorFrameReader);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2, "failed to open reader");
+					return;
+				}
 
-			hr = infraredFrameSource->OpenReader(&m_infraredFrameReader);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "failed to open infrared reader");
-				return;
-			}
+				if (colorFrameSource != NULL) {
+					colorFrameSource->Release();
+				}
 
-			if (infraredFrameSource != NULL) {
-				infraredFrameSource->Release();
-			}
-		} else if (getKey().m_targetID == 2) { // depth frames
-			IDepthFrameSource* depthFrameSource;
-			hr = sensor->get_DepthFrameSource(&depthFrameSource);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "failed to open depthFrameSource");
-				return;
-			}
+				hr = m_colorFrameReader->SubscribeFrameArrived(&m_hNextEvent);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2,
+						"failed to subscribe to image events (colorFrame)");
+					return;
+				}
+				break;
+			case 1:
+				IInfraredFrameSource* infraredFrameSource;
+				hr = sensor->get_InfraredFrameSource(&infraredFrameSource);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2, "failed to get infraredFrameSource");
+					return;
+				}
 
-			hr = depthFrameSource->OpenReader(&m_depthFrameReader);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "fail to open depth reader");
-				return;
-			}
+				hr = infraredFrameSource->OpenReader(&m_infraredFrameReader);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2, "failed to open infrared reader");
+					return;
+				}
 
-			if (depthFrameSource != NULL) {
-				depthFrameSource->Release();
-			}
-		}else if (getKey().m_targetID == 3) { // Depth as Output, UV Map Depth to Color as GrayOutput
-			IDepthFrameSource* depthFrameSource;
-			hr = sensor->get_DepthFrameSource(&depthFrameSource);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "failed to open depthFrameSource");
-				return;
-			}
+				if (infraredFrameSource != NULL) {
+					infraredFrameSource->Release();
+				}
 
-			hr = depthFrameSource->OpenReader(&m_depthFrameReader);
-			if (FAILED(hr)) {
-				LOG4CPP_ERROR(logger2, "fail to open depth reader");
-				return;
-			}
+				hr = m_infraredFrameReader->SubscribeFrameArrived(&m_hNextEvent);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2,
+						"failed to subscribe to image events (infraredFrame)");
+					return;
+				}
+				break;
+			case 2: // depth frames, either normal or
+			case 3: // Depth as Output, UV Map Depth to Color as GrayOutput
+				IDepthFrameSource* depthFrameSource;
+				hr = sensor->get_DepthFrameSource(&depthFrameSource);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2, "failed to open depthFrameSource");
+					return;
+				}
 
-			if (depthFrameSource != NULL) {
-				depthFrameSource->Release();
-			}
+				hr = depthFrameSource->OpenReader(&m_depthFrameReader);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2, "fail to open depth reader");
+					return;
+				}
+
+				if (depthFrameSource != NULL) {
+					depthFrameSource->Release();
+				}
+				hr = m_depthFrameReader->SubscribeFrameArrived(&m_hNextEvent);
+				if (FAILED(hr)) {
+					LOG4CPP_ERROR(logger2,
+						"failed to subscribe to image events (depthFrame)");
+					return;
+				}
+
+				break;
+			default:
+				LOG4CPP_ERROR(logger2, "unknown component targetID: "
+					<< targetID);
+				break;
 		}
-
-		// switch(getKey().m_targetID)
-		// {
-		// case 0:
-		// 	tmpType = NUI_IMAGE_TYPE_COLOR;
-		// 	m_resolution = NUI_IMAGE_RESOLUTION_640x480;
-		// 	break;
-		// case 1:
-		// 	tmpType = NUI_IMAGE_TYPE_COLOR_INFRARED;
-		// 	m_resolution = NUI_IMAGE_RESOLUTION_640x480;
-		// 	break;
-		// case 2:
-		// 	tmpType = NUI_IMAGE_TYPE_DEPTH;
-		// 	m_resolution = NUI_IMAGE_RESOLUTION_640x480;
-		// 	break;
-		// }
 	};
 
 	virtual void sendData(Measurement::Timestamp ts);
