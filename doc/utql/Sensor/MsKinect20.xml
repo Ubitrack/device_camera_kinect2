@@ -178,6 +178,12 @@
                 <Attribute name="targetID" displayName="target ID" min="0" max="5" default="0" xsi:type="IntAttributeDeclarationType">
                     <Description><p xmlns="http://www.w3.org/1999/xhtml">ID of bone</p></Description>
                 </Attribute>
+                <Attribute name="targetDistance" displayName="targetDistance" default="0" min="0" xsi:type="DoubleAttributeDeclarationType">
+                    <Description><h:p>The estimated distance to the target. The body will be filtered to lie in a range around this distance. A value of 0 means no filtering.</h:p></Description>
+                </Attribute>
+                <Attribute name="targetRange" displayName="targetRange" default="0" min="0" xsi:type="DoubleAttributeDeclarationType">
+                    <Description><h:p>The range of the distance to the target to accept. A value of 0 means no filtering.</h:p></Description>
+                </Attribute>
             </Edge>
 
 

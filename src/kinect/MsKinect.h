@@ -324,6 +324,8 @@ public:
 		: Kinect20ModuleComponent( name, subgraph, componentKey, pModule )
 		, m_skeletonPorts( "Output", *this )
 		, m_scale( 1.0 )
+		, m_targetDistance( 0.0 )
+		, m_targetRange( 0.0 )
 	{
 		// added 1 for floor clipping plane at the end
 		for (int i = 0; i < JointType_Count+1; ++i)
@@ -333,6 +335,17 @@ public:
 		}
 
 		subgraph->m_DataflowAttributes.getAttributeData( "scale", m_scale );
+
+	  	if ( subgraph->hasEdge( "Output" ) ) {
+	  		Graph::UTQLSubgraph::EdgePtr config = subgraph->getEdge( "Output" );
+
+		  	config->getAttributeData( "targetDistance", m_targetDistance );
+		  	config->getAttributeData( "targetRange", m_targetRange );
+	  	}
+
+	  	LOG4CPP_ERROR(logger2, "Distance: " << m_targetDistance);
+	  	LOG4CPP_ERROR(logger2, "Range: " << m_targetRange);
+
 		//LOG4CPP_INFO(logger2, "KinectScale:" << m_scale);
 	}
 
@@ -382,6 +395,8 @@ protected:
 private:
 	std::vector< Math::Pose > m_poseList;
 	float m_scale;
+	float m_targetDistance;
+	float m_targetRange;
 	IBodyFrameReader* m_bodyFrameReader;
 };
 
