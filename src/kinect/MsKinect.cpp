@@ -555,57 +555,34 @@ void Kinect20Module::kinectThread()
 	kinectInit();
 
 	ComponentList allComponents = getAllComponents();
+	std::vector<HANDLE> waitHandles;
 
 	for (ComponentList::iterator i = allComponents.begin(); i != allComponents.end(); ++i) {
 		(*i)->init(m_sensor);
+		waitHandles.push_back((*i)->getEvent());
 	}
-
-	// //look for each targetID. In this case for 0=Color-, 1=IR- and 2=Depth-Image
-	// //LOG4CPP_INFO(logger,"Check Kinect Image Component.");
-	// for(int i=0;i<=2;i++){
-	// 		Kinect20ComponentKey compKey(i, 2);
-	// 		//LOG4CPP_INFO(logger,"Has Component? "<<hasComponent(compKey)<<" for targetID =  "<<i);
-	// 		if(hasComponent(compKey)){
-	// 			getComponent(compKey)->init(m_sensor);
-	// 			//events.push_back(getComponent(compKey)->getEvent());
-	// 		}
-	// }
-
-	// //LOG4CPP_INFO(logger,"Check Kinect Skeleton Component.");
-	// for(int i = 0; i < 2; i++){
-	// 	Kinect20ComponentKey compKey(i,1);
-	// 	//LOG4CPP_INFO(logger,"Has Component? "<<hasComponent(compKey)<<" for targetID =  "<<i);
-	// 	if(hasComponent(compKey)){
-	// 		getComponent(compKey)->init(m_sensor);
-	// 	}
-	// }
-
-	// //LOG4CPP_INFO(logger,"Check Kinect Absolute Skeleton Component.");
-	// for(int i = 0; i < 2; i++){
-	// 	Kinect20ComponentKey compKey(i,3);
-	// 	//LOG4CPP_INFO(logger,"Has Component? "<<hasComponent(compKey)<<" for targetID =  "<<i);
-	// 	if(hasComponent(compKey)){
-	// 		getComponent(compKey)->init(m_sensor);
-	// 	}
-	// }
 
 	while(!m_bStop)
 	{
-		Measurement::Timestamp ts = Measurement::now();
-		/*for(int i=0;i<2;i++){
-			Kinect20ComponentKey compKey(i, 2);
-			if(hasComponent(compKey)){
-				getComponent(compKey)->sendData(ts);
-			}
-		}*/
-
-		ComponentList allComponents = getAllComponents();
-
-		for (ComponentList::iterator i = allComponents.begin(); i != allComponents.end(); ++i) {
-			(*i)->sendData(ts);
+		DWORD dwWaitResult = WaitForMultipleObjects(waitHandles.size(),
+			&waitHandles[0], FALSE, 400);
+		if (dwWaitResult == WAIT_TIMEOUT) {
+			LOG4CPP_ERROR(logger, "Timeout waiting for kinect events");
+			continue;
 		}
+		if (dwWaitResult == WAIT_FAILED) {
+			LOG4CPP_ERROR(logger, "Kinect wait failed: " << GetLastError());
+			continue;
+		}
+		if (dwWaitResult >= (WAIT_OBJECT_0 + waitHandles.size())) {
+			LOG4CPP_ERROR(logger, "Abandoned event? / Strange wait result: "  << dwWaitResult);
+			continue;
+		}
+		ResetEvent(waitHandles[dwWaitResult]);
+		Measurement::Timestamp ts = Measurement::now();
+		allComponents[dwWaitResult]->sendData(ts);
 	}
-	LOG4CPP_INFO(logger, "Main Thread.");
+	LOG4CPP_INFO(logger, "Main Thread done.");
 }
 
 void Kinect20Module::addHandle(HANDLE eventhandler)
