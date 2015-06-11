@@ -177,6 +177,36 @@ bool Kinect20AbsoluteSkeletonComponent::getSkeletonPoseList(
 				// LOG4CPP_INFO(logger, "getting joints");
 	    		hr = body->GetJoints(_countof(joints), joints);
 	    		if (SUCCEEDED(hr)) {
+	    			// check if body is inside the filter range
+	    			bool filterAccept = true;
+	    			if (m_targetDistance > 0.0 && m_targetRange > 0.0) {
+	    				filterAccept = false;
+		    			float spineDistSq =
+		    				joints[JointType_SpineBase].Position.X *
+		    				joints[JointType_SpineBase].Position.X +
+		    				joints[JointType_SpineBase].Position.Y *
+		    				joints[JointType_SpineBase].Position.Y +
+		    				joints[JointType_SpineBase].Position.Z *
+		    				joints[JointType_SpineBase].Position.Z;
+		    			// LOG4CPP_ERROR(logger, "Spine base: " << spineDistSq);
+
+		    			float lowerBoundSq = (m_targetDistance - m_targetRange)
+		    				* (m_targetDistance - m_targetRange);
+		    			float upperBoundSq = (m_targetDistance + m_targetRange)
+		    				* (m_targetDistance + m_targetRange);
+		    			// LOG4CPP_ERROR(logger, "Lower: " << lowerBoundSq);
+		    			// LOG4CPP_ERROR(logger, "Upper: " << upperBoundSq);
+
+		    			if ((lowerBoundSq <= spineDistSq) &&
+		    				(spineDistSq <= upperBoundSq)) {
+		    				filterAccept = true;
+		    			}
+	    			}
+
+	    			if (!filterAccept) {
+	    				continue;
+	    			}
+
 					// LOG4CPP_INFO(logger, "getting joint oprientations");
 		    		hr = body->GetJointOrientations(_countof(jointOrientations),
 		    			jointOrientations);
