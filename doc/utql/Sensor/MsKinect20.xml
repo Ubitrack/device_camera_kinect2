@@ -74,6 +74,41 @@
         </DataflowConfiguration>
     </Pattern>
 
+    <Pattern name="Kinect20DepthImageUncalibrated" displayName="Kinect20 Depth Camera Uncalibrated">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+
+            <Node name="Kinect20DepthCamera" displayName="Kinect20DepthCamera">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="ImagePlane" displayName="Image Plane">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20DepthCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="3" default="2" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">0 Color, 1 IR, 2 Depth</p></Description>
+                </Attribute>
+                <Attribute name="onlyPlayer" displayName="Show only Player" min="0" max="1" default="0" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">1 true, 0 false. If true only Player in Depth mode is visible.</p></Description>
+                </Attribute>
+            </Edge>
+            <Edge name="OutputGray" displayName="OutputGray" source="Kinect20DepthCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Image"/>
+
+        </DataflowConfiguration>
+    </Pattern>
+
 	<Pattern name="Kinect20Image" displayName="Kinect20 Image">
         <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
         <Output>
@@ -162,6 +197,57 @@
             </Attribute>
         </DataflowConfiguration>
     </Pattern>
+
+
+    <Pattern name="Kinect20DepthImage" displayName="Kinect20 Depth Camera">
+        <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
+        <Output>
+            <Node name="Kinect20" displayName="Kinect20">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+
+            <Node name="Kinect20DepthCamera" displayName="Kinect20DepthCamera">
+                <Description><p xmlns="http://www.w3.org/1999/xhtml">Kinect20 Sensor</p></Description>
+            </Node>
+            <Node name="ImagePlane" displayName="Image Plane">
+            </Node>
+
+            <Edge name="Output" displayName="Output" source="Kinect20DepthCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="targetID" displayName="target ID" min="0" max="3" default="2" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">0 Color, 1 IR, 2 Depth</p></Description>
+                </Attribute>
+                <Attribute name="onlyPlayer" displayName="Show only Player" min="0" max="1" default="0" xsi:type="IntAttributeDeclarationType">
+                    <Description><p xmlns="http://www.w3.org/1999/xhtml">1 true, 0 false. If true only Player in Depth mode is visible.</p></Description>
+                </Attribute>
+            </Edge>
+            <Edge name="OutputGray" displayName="OutputGray" source="Kinect20DepthCamera" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+            <Edge name="OutputRAW" displayName="OutputRAW" source="Kinect20" destination="ImagePlane">
+                <Attribute name="type" value="Image" xsi:type="EnumAttributeReferenceType"/>
+                <Attribute name="mode" value="push" xsi:type="EnumAttributeReferenceType"/>
+            </Edge>
+
+        </Output>
+        <DataflowConfiguration>
+            <UbitrackLib class="Kinect20Image"/>
+              <Attribute name="intrinsicMatrixFile" default="CamMatrix.calib" displayName="Intrinsic matrix file" xsi:type="PathAttributeDeclarationType">
+                <Description>
+                    <h:p>Optional file where the camera intrinsic matrix will be read from. This is necessary to
+                    undistort the image. The matrix is also provided to other components via the
+                    <h:code>Intrinsics</h:code> port</h:p>
+                </Description>
+            </Attribute>
+            <Attribute name="distortionFile" default="CamCoeffs.calib" displayName="Distortion file" xsi:type="PathAttributeDeclarationType">
+                <Description><h:p>Optional file where radial distortion coefficients will be read from. This is necessary to
+                undistort the image. </h:p></Description>
+            </Attribute>
+        </DataflowConfiguration>
+    </Pattern>
+
 
     <Pattern name="Kinect20AbsoluteSkeleton" displayName="Kinect20 Absolute Skeleton">
         <Description><p xmlns="http://www.w3.org/1999/xhtml">ModuleTest pattern</p></Description>
