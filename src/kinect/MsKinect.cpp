@@ -355,7 +355,7 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 		m_imagePort.send(Measurement::ImageMeasurement(ts, pImage));
 	//}
 	
-	cv::Mat tmp;
+	cv::Mat tmp, img;
 
 	if (m_imagePortGray.isConnected()) {
 		LOG4CPP_DEBUG(logger, "create gray image for " << bodyID);
@@ -363,18 +363,21 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 
 		switch (bodyID){
 		case 0:
-			pGrayImage = pImage->CvtColor(CV_RGB2GRAY, 1);
+			pGrayImage = pImage->CvtColor(CV_BGRA2GRAY, 1);
 			pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
 			pGrayImage->set_origin(pImage->origin());
 			break;
 		case 1:
-			pImage->Mat().convertTo(tmp, CV_8UC1, 1. / 256.);
-			pGrayImage.reset(new Vision::Image(tmp));
+
+			// should be optimized
+			pImage->Mat().convertTo(tmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 65535.);;
+			cv::LUT(tmp, m_irLutMatrix, img);
+			pGrayImage.reset(new Vision::Image(img));
 			pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
 			pGrayImage->set_origin(pImage->origin());
 			break;
 		case 2:
-			pImage->Mat().convertTo(tmp, CV_8UC1, 255. );
+			pImage->Mat().convertTo(tmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 8000.);
 			pGrayImage.reset(new Vision::Image(tmp));
 			pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
 			pGrayImage->set_origin(pImage->origin());
@@ -432,15 +435,13 @@ boost::shared_ptr<Vision::Image> Kinect20ImageComponent::getColorImage() {
 	// gpu init here
 
 
-	cv::Mat img2, img3;
-	// convert to BGR - needed ?? 
-	cv::cvtColor(img1, img2, CV_BGRA2BGR);
+	cv::Mat img2;
 
 	// flip image
-	cv::flip(img2, img3, 1);
+	cv::flip(img1, img2, 1);
 
-	boost::shared_ptr< Vision::Image > pImage(new Vision::Image(img3));
-	pImage->set_pixelFormat(Vision::Image::BGR);
+	boost::shared_ptr< Vision::Image > pImage(new Vision::Image(img2));
+	pImage->set_pixelFormat(Vision::Image::BGRA);
 
 	// Release the frame
 	if (colorFrame != NULL) {
@@ -499,21 +500,22 @@ boost::shared_ptr<Vision::Image> Kinect20ImageComponent::getDepthImage(bool crea
 		return NULL;
 	}
 
-	cv::Mat img1(height, width, CV_16UC1);
-	size_t imgsize = img1.total() * img1.elemSize();
-	hr = depthFrame->CopyFrameDataToArray(imgsize, reinterpret_cast<UINT16*>(img1.data));
+	boost::shared_ptr< Vision::Image > pImage;
 
+	cv::Mat img1, img2;
 
-	// gpu init here
+	unsigned int depthBufferSize = 0;
+	unsigned short *depthBuffer = nullptr;
+	hr = depthFrame->AccessUnderlyingBuffer(&depthBufferSize, &depthBuffer);
+	if (SUCCEEDED(hr))
+	{
+		img1 = cv::Mat(cv::Size(width, height), cv::Mat::MAGIC_VAL + CV_MAKE_TYPE(IPL2CV_DEPTH(16), 1), depthBuffer, cv::Mat::AUTO_STEP);
+		// gpu init here
 
-
-	cv::Mat img2, img3;
-	// flip image
-	cv::flip(img1, img2, 1);
-
-	img2.convertTo(img3, CV_32FC1);
-
-	boost::shared_ptr< Vision::Image > pImage(new Vision::Image(img3));
+		// flip image
+		cv::flip(img1, img2, 1);
+		pImage.reset(new Vision::Image(img2));
+	}
 	pImage->set_pixelFormat(Vision::Image::DEPTH);
 
 
@@ -570,19 +572,23 @@ boost::shared_ptr<Vision::Image> Kinect20ImageComponent::getIRImage()
 		frameDescription->Release();
 	}
 
-	cv::Mat img1(height, width, CV_16UC1);
-	size_t imgsize = img1.total() * img1.elemSize();
-	hr = infraredFrame->CopyFrameDataToArray(imgsize, reinterpret_cast<UINT16*>(img1.data));
+	boost::shared_ptr< Vision::Image > pImage;
 
+	cv::Mat img1, img2;
 
-	// gpu init here
+	unsigned int infraredBufferSize = 0;
+	unsigned short *infraredBuffer = nullptr;
+	hr = infraredFrame->AccessUnderlyingBuffer(&infraredBufferSize, &infraredBuffer);
+	if (SUCCEEDED(hr))
+	{
+		img1 = cv::Mat(cv::Size(width, height), cv::Mat::MAGIC_VAL + CV_MAKE_TYPE(IPL2CV_DEPTH(16), 1), infraredBuffer, cv::Mat::AUTO_STEP);
+		// gpu init here
 
-
-	cv::Mat img2;
-	// flip image
-	cv::flip(img1, img2, 1);
-
-	boost::shared_ptr< Vision::Image > pImage(new Vision::Image(img2));
+		// flip image
+		cv::flip(img1, img2, 1);
+		pImage.reset(new Vision::Image(img2));
+	}
+	
 	pImage->set_pixelFormat(Vision::Image::LUMINANCE);
 
 	if (infraredFrame != NULL) {

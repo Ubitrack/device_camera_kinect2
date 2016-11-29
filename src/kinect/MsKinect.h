@@ -443,6 +443,17 @@ public:
 	~Kinect20ImageComponent(){
 	}
 
+	void initialize_infrared_lookuptable() {
+		// initialize lut matrix - make parameters configurable !!
+		float amp = 3.0f;
+		float gamma = 1.1f;
+
+		m_irLutMatrix = cv::Mat(1, 256, CV_8UC1);
+		unsigned char* ptr = m_irLutMatrix.ptr<unsigned char>();
+		for (int i = 0; i < 256; i++)
+			ptr[i] = (unsigned char)(std::min(std::pow(amp * ((float)i / 255.0f), gamma), 0.99f) * 255.0f);
+	}
+
 	virtual void init(IKinectSensor* sensor)
 	{
 		m_sensor = sensor;
@@ -483,6 +494,9 @@ public:
 				}
 				break;
 			case 1:
+
+				initialize_infrared_lookuptable();
+
 				IInfraredFrameSource* infraredFrameSource;
 				hr = sensor->get_InfraredFrameSource(&infraredFrameSource);
 				if (FAILED(hr)) {
@@ -559,6 +573,8 @@ protected:
 	IInfraredFrameReader* m_infraredFrameReader;
 
 	BYTE* m_depthRGBX;
+
+	cv::Mat m_irLutMatrix;
 };
 
 } } // namespace Ubitrack::Drivers
