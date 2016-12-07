@@ -290,6 +290,10 @@ bool Kinect20AbsoluteSkeletonComponent::getSkeletonPoseList(
 
 void Kinect20AbsoluteSkeletonComponent::sendData(Measurement::Timestamp ts)
 {
+#ifdef ENABLE_EVENT_TRACING
+	TRACEPOINT_MEASUREMENT_CREATE(getEventDomain(), ts, getName().c_str(), "KinectSkeleton")
+#endif
+
 	bool newData = getSkeletonPoseList(m_poseList);
 	if (newData) {
 		boost::shared_ptr< std::vector< Math::Pose > > pPoseList(new std::vector<Math::Pose>(m_poseList));
@@ -299,9 +303,22 @@ void Kinect20AbsoluteSkeletonComponent::sendData(Measurement::Timestamp ts)
 
 void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 {
+
+#ifdef ENABLE_EVENT_TRACING
+	TRACEPOINT_MEASUREMENT_CREATE(getEventDomain(), ts, getName().c_str(), "KinectCapture")
+#endif
+
 	boost::shared_ptr< Vision::Image > pImageRAW;
 	boost::shared_ptr< Vision::Image > pImage;
 	boost::shared_ptr< Vision::Image > pUVMap;
+
+	bool doGpuUpload = false;
+	if (m_autoGPUUpload){
+		Vision::OpenCLManager& oclManager = Vision::OpenCLManager::singleton();
+		if (oclManager.isInitialized()) {
+			doGpuUpload = true;
+		}
+	}
 
 	int bodyID = getKey().m_targetID;
 	switch(bodyID){
@@ -309,6 +326,9 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 		pImageRAW = getColorImage();
 		if (!pImageRAW) {
 			return;
+		}
+		if (doGpuUpload) {
+			pImageRAW->uMat();
 		}
 		if (m_undistorter) {
 			pImage = m_undistorter->undistort(pImageRAW);
@@ -322,6 +342,9 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 		if (!pImageRAW) {
 			return;
 		}
+		if (doGpuUpload) {
+			pImageRAW->uMat();
+		}
 		if (m_undistorter) {
 			pImage = m_undistorter->undistort(pImageRAW);
 		}
@@ -334,12 +357,18 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 		if (!pImageRAW) {
 			return;
 		}
+		if (doGpuUpload) {
+			pImageRAW->uMat();
+		}
 		pImage = pImageRAW;
 		break;
 	case 3:
 		pImageRAW = getDepthImage(true, pUVMap);
 		if (!pImageRAW) {
 			return;
+		}
+		if (doGpuUpload) {
+			pImageRAW->uMat();
 		}
 		pImage = pImageRAW;
 		break;
@@ -355,9 +384,10 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 		m_imagePort.send(Measurement::ImageMeasurement(ts, pImage));
 	//}
 	
-	cv::Mat tmp, img;
-
 	if (m_imagePortGray.isConnected()) {
+		cv::Mat tmp, img;
+		cv::UMat utmp, uimg;
+
 		LOG4CPP_DEBUG(logger, "create gray image for " << bodyID);
 		boost::shared_ptr< Vision::Image > pGrayImage;
 
@@ -368,22 +398,41 @@ void Kinect20ImageComponent::sendData(Measurement::Timestamp ts)
 			pGrayImage->set_origin(pImage->origin());
 			break;
 		case 1:
-
-			// should be optimized
-			pImage->Mat().convertTo(tmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 65535.);;
-			cv::LUT(tmp, m_irLutMatrix, img);
-			pGrayImage.reset(new Vision::Image(img));
-			pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
-			pGrayImage->set_origin(pImage->origin());
+			if (doGpuUpload) {
+				// should be optimized
+				pImage->uMat().convertTo(utmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 65535.);;
+				cv::LUT(utmp, m_irLutMatrix, uimg);
+				pGrayImage.reset(new Vision::Image(uimg));
+				pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
+				pGrayImage->set_origin(pImage->origin());
+			}
+			else {
+				// should be optimized
+				pImage->Mat().convertTo(tmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 65535.);;
+				cv::LUT(tmp, m_irLutMatrix, img);
+				pGrayImage.reset(new Vision::Image(img));
+				pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
+				pGrayImage->set_origin(pImage->origin());
+			}
 			break;
 		case 2:
-			pImage->Mat().convertTo(tmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 8000.);
-			pGrayImage.reset(new Vision::Image(tmp));
-			pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
-			pGrayImage->set_origin(pImage->origin());
+			if (doGpuUpload) {
+				pImage->uMat().convertTo(utmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 8000.);
+				pGrayImage.reset(new Vision::Image(utmp));
+				pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
+				pGrayImage->set_origin(pImage->origin());
+			}
+			else {
+				pImage->Mat().convertTo(tmp, CV_MAKETYPE(CV_MAT_DEPTH(CV_8UC1), 1), 255. / 8000.);
+				pGrayImage.reset(new Vision::Image(tmp));
+				pGrayImage->set_pixelFormat(Vision::Image::LUMINANCE);
+				pGrayImage->set_origin(pImage->origin());
+			}
 			break;
 		case 3:
-		
+			if (doGpuUpload) {
+				pUVMap->uMat();
+			}
 			pGrayImage = pUVMap;			
 			break;
 

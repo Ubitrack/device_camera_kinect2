@@ -51,6 +51,8 @@
 #include <boost/bind.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <utVision/Undistortion.h>
+#include <utVision/OpenCLManager.h>
+#include <utUtil/TracingProvider.h>
 
 namespace Ubitrack { namespace Drivers {
 
@@ -436,6 +438,15 @@ public:
 			m_undistorter.reset(new Vision::Undistortion(intrinsicFile, distortionFile));
 		}
 
+		Vision::OpenCLManager& oclManager = Vision::OpenCLManager::singleton();
+		if (oclManager.isEnabled()) {
+			if (subgraph->m_DataflowAttributes.hasAttribute("uploadImageOnGPU")){
+				m_autoGPUUpload = subgraph->m_DataflowAttributes.getAttributeString("uploadImageOnGPU") == "true";
+			}
+			if (m_autoGPUUpload){
+				oclManager.activate();
+			}
+		}
 
 	}
 
@@ -563,6 +574,9 @@ protected:
 	Dataflow::PushSupplier< Measurement::ImageMeasurement > m_imagePortGray;
 	/** undistorter */
 	boost::shared_ptr<Vision::Undistortion> m_undistorter;
+
+	// automatic upload to GPU?
+	bool m_autoGPUUpload;
 
 	boost::shared_ptr< Vision::Image > getColorImage();
 	boost::shared_ptr< Vision::Image > getIRImage();

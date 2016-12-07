@@ -35,6 +35,15 @@
         </Output>
         <DataflowConfiguration>
             <UbitrackLib class="Kinect20Image"/>
+            <Attribute name="uploadImageOnGPU" displayName="Automatic Upload on GPU" default="false" xsi:type="EnumAttributeDeclarationType">
+                <Description>
+                    <h:p>
+                        Each grabbed Image is automatically uploaded to the GPU for further processing. Attention: Uploading and downloading images from the GPU is time consuming.
+                    </h:p>
+                </Description>
+                <EnumValue name="false" displayName="False"/>
+                <EnumValue name="true"  displayName="True"/>
+            </Attribute>
 
         </DataflowConfiguration>
     </Pattern>
@@ -70,6 +79,15 @@
         </Output>
         <DataflowConfiguration>
             <UbitrackLib class="Kinect20Image"/>
+            <Attribute name="uploadImageOnGPU" displayName="Automatic Upload on GPU" default="false" xsi:type="EnumAttributeDeclarationType">
+                <Description>
+                    <h:p>
+                        Each grabbed Image is automatically uploaded to the GPU for further processing. Attention: Uploading and downloading images from the GPU is time consuming.
+                    </h:p>
+                </Description>
+                <EnumValue name="false" displayName="False"/>
+                <EnumValue name="true"  displayName="True"/>
+            </Attribute>
 
         </DataflowConfiguration>
     </Pattern>
@@ -105,6 +123,15 @@
         </Output>
         <DataflowConfiguration>
             <UbitrackLib class="Kinect20Image"/>
+            <Attribute name="uploadImageOnGPU" displayName="Automatic Upload on GPU" default="false" xsi:type="EnumAttributeDeclarationType">
+                <Description>
+                    <h:p>
+                        Each grabbed Image is automatically uploaded to the GPU for further processing. Attention: Uploading and downloading images from the GPU is time consuming.
+                    </h:p>
+                </Description>
+                <EnumValue name="false" displayName="False"/>
+                <EnumValue name="true"  displayName="True"/>
+            </Attribute>
 
         </DataflowConfiguration>
     </Pattern>
@@ -146,6 +173,15 @@
                 	<h:p>Cameramodelfile</h:p>
                	</Description>
             </Attribute>
+            <Attribute name="uploadImageOnGPU" displayName="Automatic Upload on GPU" default="false" xsi:type="EnumAttributeDeclarationType">
+                <Description>
+                    <h:p>
+                        Each grabbed Image is automatically uploaded to the GPU for further processing. Attention: Uploading and downloading images from the GPU is time consuming.
+                    </h:p>
+                </Description>
+                <EnumValue name="false" displayName="False"/>
+                <EnumValue name="true"  displayName="True"/>
+            </Attribute>
         </DataflowConfiguration>
     </Pattern>
 
@@ -184,16 +220,19 @@
         </Output>
         <DataflowConfiguration>
             <UbitrackLib class="Kinect20Image"/>
-			  <Attribute name="intrinsicMatrixFile" default="CamMatrix.calib" displayName="Intrinsic matrix file" xsi:type="PathAttributeDeclarationType">
+              <Attribute name="cameraModelFile" default="CamModel.calib" displayName="Camera model file" xsi:type="PathAttributeDeclarationType">
                 <Description>
-                	<h:p>Optional file where the camera intrinsic matrix will be read from. This is necessary to
-                	undistort the image. The matrix is also provided to other components via the
-                	<h:code>Intrinsics</h:code> port</h:p>
-               	</Description>
+                    <h:p>Cameramodelfile</h:p>
+                </Description>
             </Attribute>
-            <Attribute name="distortionFile" default="CamCoeffs.calib" displayName="Distortion file" xsi:type="PathAttributeDeclarationType">
-                <Description><h:p>Optional file where radial distortion coefficients will be read from. This is necessary to
-                undistort the image. </h:p></Description>
+            <Attribute name="uploadImageOnGPU" displayName="Automatic Upload on GPU" default="false" xsi:type="EnumAttributeDeclarationType">
+                <Description>
+                    <h:p>
+                        Each grabbed Image is automatically uploaded to the GPU for further processing. Attention: Uploading and downloading images from the GPU is time consuming.
+                    </h:p>
+                </Description>
+                <EnumValue name="false" displayName="False"/>
+                <EnumValue name="true"  displayName="True"/>
             </Attribute>
         </DataflowConfiguration>
     </Pattern>
@@ -234,16 +273,19 @@
         </Output>
         <DataflowConfiguration>
             <UbitrackLib class="Kinect20Image"/>
-              <Attribute name="intrinsicMatrixFile" default="CamMatrix.calib" displayName="Intrinsic matrix file" xsi:type="PathAttributeDeclarationType">
+              <Attribute name="cameraModelFile" default="CamModel.calib" displayName="Camera model file" xsi:type="PathAttributeDeclarationType">
                 <Description>
-                    <h:p>Optional file where the camera intrinsic matrix will be read from. This is necessary to
-                    undistort the image. The matrix is also provided to other components via the
-                    <h:code>Intrinsics</h:code> port</h:p>
+                    <h:p>Cameramodelfile</h:p>
                 </Description>
             </Attribute>
-            <Attribute name="distortionFile" default="CamCoeffs.calib" displayName="Distortion file" xsi:type="PathAttributeDeclarationType">
-                <Description><h:p>Optional file where radial distortion coefficients will be read from. This is necessary to
-                undistort the image. </h:p></Description>
+            <Attribute name="uploadImageOnGPU" displayName="Automatic Upload on GPU" default="false" xsi:type="EnumAttributeDeclarationType">
+                <Description>
+                    <h:p>
+                        Each grabbed Image is automatically uploaded to the GPU for further processing. Attention: Uploading and downloading images from the GPU is time consuming.
+                    </h:p>
+                </Description>
+                <EnumValue name="false" displayName="False"/>
+                <EnumValue name="true"  displayName="True"/>
             </Attribute>
         </DataflowConfiguration>
     </Pattern>
