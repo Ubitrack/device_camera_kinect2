@@ -491,6 +491,8 @@ boost::shared_ptr<Vision::Image> Kinect20ImageComponent::getColorImage() {
 
 	boost::shared_ptr< Vision::Image > pImage(new Vision::Image(img2));
 	pImage->set_pixelFormat(Vision::Image::BGRA);
+	pImage->set_channels(4);
+	pImage->set_bitsPerPixel(1);
 
 	// Release the frame
 	if (colorFrame != NULL) {
@@ -566,6 +568,8 @@ boost::shared_ptr<Vision::Image> Kinect20ImageComponent::getDepthImage(bool crea
 		pImage.reset(new Vision::Image(img2));
 	}
 	pImage->set_pixelFormat(Vision::Image::DEPTH);
+	pImage->set_channels(1);
+	pImage->set_bitsPerPixel(2);
 
 
 	if (createUVMap){
@@ -639,6 +643,8 @@ boost::shared_ptr<Vision::Image> Kinect20ImageComponent::getIRImage()
 	}
 	
 	pImage->set_pixelFormat(Vision::Image::LUMINANCE);
+	pImage->set_channels(1);
+	pImage->set_bitsPerPixel(2);
 
 	if (infraredFrame != NULL) {
 		infraredFrame->Release();
