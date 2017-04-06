@@ -49,10 +49,22 @@ void Kinect20Module::startModule()
 {
 	if ( !m_running )
 	{
-		m_running = true;
 		m_bStop = false;
-		m_Thread.reset( new boost::thread( boost::bind ( &Kinect20Module::kinectThread, this ) ) );
+	
+		// check if oclmanager is active
+		Vision::OpenCLManager& oclManager = Vision::OpenCLManager::singleton();
+		if ((oclManager.isEnabled()) && (oclManager.isActive()) && (!oclManager.isInitialized())) {
+			LOG4CPP_INFO(logger, "Waiting for OpenCLManager Initialization callback.");
+			oclManager.registerInitCallback(boost::bind(&Kinect20Module::startCapturing, this));
+		} else {
+			startCapturing();
+		}
+		m_running = true;
 	}
+}
+
+void Kinect20Module::startCapturing() {
+	m_Thread.reset(new boost::thread(boost::bind(&Kinect20Module::kinectThread, this)));
 }
 
 void Kinect20Module::stopModule()

@@ -152,6 +152,8 @@ public:
 
 	virtual void startModule();
 
+	void startCapturing();
+
 	virtual void stopModule();
 
 	virtual boost::shared_ptr< Kinect20ModuleComponent > createComponent( const std::string&, const std::string& name, boost::shared_ptr< Graph::UTQLSubgraph> subgraph,
