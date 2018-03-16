@@ -418,6 +418,8 @@ public:
 		, m_imagePort("Output", *this)
 		, m_imagePortGray("OutputGray", *this)
 		, m_imagePortRAW("OutputRAW", *this)
+		, m_intrinsicsPort("Intrinsics", *this, boost::bind(&Kinect20ImageComponent::getIntrinsic, this, _1))
+        , m_cameraModelPort("CameraModel", *this, boost::bind(&Kinect20ImageComponent::getCameraModel, this, _1))
 		, m_onlyPlayer(0)
 	{
 		m_depthRGBX = new BYTE[cDepthWidth*cDepthHeight*cBytesPerPixel];
@@ -571,9 +573,24 @@ public:
 
 	int m_onlyPlayer;
 protected:
+
+	/** handler method for incoming pull requests */
+	Measurement::Matrix3x3 getIntrinsic(Measurement::Timestamp t)
+	{
+		return Measurement::Matrix3x3(t, m_undistorter->getMatrix());
+	}
+
+    /** handler method for incoming pull requests */
+    Measurement::CameraIntrinsics getCameraModel(Measurement::Timestamp t)
+    {
+        return Measurement::CameraIntrinsics(t, m_undistorter->getIntrinsics());
+    }
+	
 	Dataflow::PushSupplier< Measurement::ImageMeasurement > m_imagePort;
 	Dataflow::PushSupplier< Measurement::ImageMeasurement > m_imagePortRAW;
 	Dataflow::PushSupplier< Measurement::ImageMeasurement > m_imagePortGray;
+	Dataflow::PullSupplier< Measurement::Matrix3x3 > m_intrinsicsPort;
+    Dataflow::PullSupplier< Measurement::CameraIntrinsics > m_cameraModelPort;
 	/** undistorter */
 	boost::shared_ptr<Vision::Undistortion> m_undistorter;
 
