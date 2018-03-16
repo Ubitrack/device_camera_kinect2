@@ -42,6 +42,7 @@
 #include <Kinect.h>
 
 #include <utDataflow/PushSupplier.h>
+#include <utDataflow/PullSupplier.h>
 #include <utDataflow/Component.h>
 #include <utDataflow/Module.h>
 #include <utMeasurement/Measurement.h>
